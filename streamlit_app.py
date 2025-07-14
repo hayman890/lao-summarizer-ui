@@ -27,14 +27,23 @@ if st.button("Summarize"):
                     aws_secret_access_key=st.secrets["AWS_SECRET_ACCESS_KEY"],
                     region_name=st.secrets["AWS_REGION"]
                 )
-                payload = {"inputs": user_input.strip()}
+                payload = {
+                    "inputs": user_input.strip()
+                }
+                
                 response = runtime.invoke_endpoint(
                     EndpointName="lao-summarizer-endpoint",
                     ContentType="application/json",
                     Body=json.dumps(payload)
                 )
                 result = json.loads(response["Body"].read().decode("utf-8"))
-                st.success("Summary:")
-                st.write(result)
+                
+                # Check if result is a string or list
+                if isinstance(result, list):
+                    st.success("Summary:")
+                    st.write(result[0]['generated_text'])
+                else:
+                    st.success("Summary:")
+                    st.write(result)
             except Exception as e:
                 st.error(f"Error: {str(e)}")
