@@ -18,7 +18,15 @@ if st.button("Summarize"):
         with st.spinner("Summarizing..."):
             try:
                 # Connect to SageMaker endpoint
-                runtime = boto3.client("sagemaker-runtime", region_name="ap-southeast-2")
+                #runtime = boto3.client("sagemaker-runtime", region_name="ap-southeast-2")
+                import os
+
+                runtime = boto3.client(
+                    "sagemaker-runtime",
+                    aws_access_key_id=st.secrets["AWS_ACCESS_KEY_ID"],
+                    aws_secret_access_key=st.secrets["AWS_SECRET_ACCESS_KEY"],
+                    region_name=st.secrets["AWS_REGION"]
+                )
                 payload = {"inputs": user_input.strip()}
                 response = runtime.invoke_endpoint(
                     EndpointName="lao-summarizer-endpoint",
